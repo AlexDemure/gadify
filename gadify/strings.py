@@ -96,19 +96,26 @@ def camel(string: str, clean: bool = True) -> str:
 
 
 def pascal(string: str, preserve: bool = True, clean: bool = True) -> str:
-    string = strip(string, clean)
-    if words := re.split(const.REGEXP_NON_ALPHANUMERIC, string):
-        result = []
-        for word in words:
-            if not word:
-                continue
-            if preserve and word.isupper():
-                result.append(word)
-            else:
-                result.append(word.capitalize())
-        return const.SYMBOL_EMPTY.join(result)
-    else:
+    if clean:
+        string = string.strip()
+
+    if not re.search(const.REGEXP_NON_ALPHANUMERIC, string) and string and (string[0].isupper() or string[0].isdigit()):
         return string
+
+    words = re.split(const.REGEXP_NON_ALPHANUMERIC, string)
+    if not words:
+        return string
+
+    result = []
+    for word in words:
+        if not word:  # Пропускаем пустые части
+            continue
+        if preserve and word.isupper() and len(word) > 1:
+            result.append(word)
+        else:
+            result.append(word.capitalize())
+
+    return const.SYMBOL_EMPTY.join(result)
 
 
 def kebab(string: str, clean: bool = True) -> str:
