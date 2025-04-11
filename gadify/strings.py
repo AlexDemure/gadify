@@ -99,21 +99,19 @@ def pascal(string: str, preserve: bool = True, clean: bool = True) -> str:
     if clean:
         string = string.strip()
 
-    if not re.search(const.REGEXP_NON_ALPHANUMERIC, string) and string and (string[0].isupper() or string[0].isdigit()):
-        return string
-
-    words = re.split(const.REGEXP_NON_ALPHANUMERIC, string)
-    if not words:
-        return string
-
+    chunks = re.split(const.REGEXP_NON_ALPHANUMERIC, string)
     result = []
-    for word in words:
-        if not word:  # Пропускаем пустые части
+
+    for chunk in chunks:
+        if not chunk:
             continue
-        if preserve and word.isupper() and len(word) > 1:
-            result.append(word)
-        else:
-            result.append(word.capitalize())
+
+        words = re.findall(const.REGEXP_PASCAL_WORDS, chunk)
+        for word in words:
+            if preserve and word.isupper() and len(word) > 1:  # Сохраняем аббревиатуры вроде "API"
+                result.append(word)
+            else:
+                result.append(word.capitalize())  # Первая буква заглавная
 
     return const.SYMBOL_EMPTY.join(result)
 
