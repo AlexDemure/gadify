@@ -2,8 +2,8 @@ import json
 import typing
 
 
-def tojson(obj: typing.Any, indent: int = 2) -> str:
-    return json.dumps(obj, indent=indent, ensure_ascii=False, default=str)
+def tojson(obj: typing.Any, indent: typing.Optional[int] = None, ensure_ascii: bool = False) -> str:
+    return json.dumps(obj, indent=indent, ensure_ascii=ensure_ascii, default=str)
 
 
 def fromjson(text: str) -> typing.Any:
