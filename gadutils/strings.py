@@ -3,7 +3,7 @@ import re
 import typing
 import unicodedata
 
-from gadify import const
+from gadutils import const
 
 
 def strip(string: str, clean: bool = True, chars: str = const.SYMBOL_EMPTY) -> str:

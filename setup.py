@@ -4,8 +4,8 @@ with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="gadify",
-    version="0.0.5",
+    name="gadutils",
+    version="0.0.1",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={},
@@ -14,7 +14,7 @@ setup(
     description="A lightweight utility library for building clean and reusable data manipulation functions.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/AlexDemure/gadify",
+    url="https://github.com/AlexDemure/gadutils",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

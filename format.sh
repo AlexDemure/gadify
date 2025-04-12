@@ -1,2 +1,2 @@
-isort gadify/
-ruff format gadify/ --no-cache
+isort gadutils/
+ruff format gadutils/ --no-cache

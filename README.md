@@ -1,28 +1,33 @@
 <p align="center">
-  <a href="https://github.com/AlexDemure/gadify">
-    <a href="https://ibb.co/0yMZWZQz"><img src="https://i.ibb.co/whWCbCY2/logo.png" alt="logo" border="0"></a>
+  <a href="https://github.com/AlexDemure/gadutils">
+    <a href="https://ibb.co/LhnNPPYp"><img src="https://i.ibb.co/JF53ddmk/logo.png" alt="logo" border="0"></a>
   </a>
 </p>
 
 <p align="center">
-  A lightweight utility library for building clean and reusable data manipulation functions.
+  A utility library for building clean and reusable data manipulation functions.
 </p>
 
 ---
-Gadify is a utility-first library that centralizes all data manipulation logic into one clean and structured place. Instead of scattering helper functions and utility logic across your codebase, Gadify organizes them by data type — such as strings, decimal, dates, and more — making your application easier to maintain, test, and extend.
+Utility Python library that centralizes all your data manipulation logic into one clean and structured place.
+Instead of scattering helper functions across the codebase, it organizes them by data type — such as strings, decimals, dates, and more — making your application easier to maintain, test, and extend.
 
-It also solves the common problem of repeatedly importing different standard libraries or third-party tools throughout your project. With Gadify, you can access all your data utilities from a single, consistent import path — reducing noise and avoiding naming debates like from datetime import datetime vs import datetime as dt.
+- Centralized and consistent data utilities
+- Cleaner imports — no more `from datetime import datetime` vs `import datetime as dt`
+- Reduces boilerplate and external dependencies
+- Makes utility logic reusable, testable, and predictable
+
 ## Installation
 
 ```
-pip install gadify
+pip install gadutils
 ```
 
 
 ## Usage
 
 ```python
-from gadify import strings, dates, decimals, fields, json, lists, paths, urls
+from gadutils import strings, dates, decimals, fields, json, lists, paths, urls
 
 print(strings.kebab("Hello World"))  # hello-world
 

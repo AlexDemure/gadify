@@ -1,7 +1,7 @@
 import pathlib
 import typing
 
-from gadify import const
+from gadutils import const
 
 
 def current() -> pathlib.Path:
