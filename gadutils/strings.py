@@ -1,5 +1,4 @@
 import contextlib
-import re
 import typing
 import unicodedata
 
@@ -23,10 +22,7 @@ def compact(string: str, clean: bool = True) -> str:
 
 
 def truncate(string: str, length: int, clean: bool = True) -> str:
-    string = strip(string, clean)
-    if len(string) <= length:
-        return string
-    return string[: length - len(const.SYMBOL_TRUNCATION)] + const.SYMBOL_TRUNCATION
+    return strip(string, clean)[: length - len(const.SYMBOL_TRUNCATION)] + const.SYMBOL_TRUNCATION
 
 
 def remove(string: str, prefix: str = None, suffix: str = None, clean: bool = True) -> str:
@@ -44,7 +40,7 @@ def empty(string: str, clean: bool = True) -> bool:
 
 def number(string: str, clean: bool = True) -> bool:
     with contextlib.suppress(ValueError):
-        float(strip(string, clean))
+        float(strip(string, clean).replace(const.SYMBOL_COMMA, const.SYMBOL_DOT))
         return True
     return False
 
@@ -70,59 +66,85 @@ def capitalize(string: str, clean: bool = True) -> str:
 
 
 def sentence(string: str, clean: bool = True) -> str:
-    string = strip(string, clean)
-    if words := re.split(const.REGEXP_NON_ALPHANUMERIC, string):
-        return const.SYMBOL_WHITESPACE.join([capitalize(words[0])] + [lower(word) for word in words[1:] if word])
-    else:
-        return string
+    string = compact(string, clean)
+    return string[:1].upper() + string[1:].lower() if string else string
 
 
 def acronym(string: str, clean: bool = True) -> str:
-    words = re.split(const.REGEXP_NON_ALPHANUMERIC, strip(string, clean))
-    return const.SYMBOL_EMPTY.join(upper(word[0]) for word in words if word)
+    words = const.REGEXP_NON_ALPHANUMERIC.findall(strip(string, clean))
+    return const.SYMBOL_EMPTY.join(word[0].upper() for word in words)
+
+
+def words(string: str, clean: bool = True) -> typing.List[str]:
+    return const.REGEXP_NON_ALPHANUMERIC.findall(strip(string, clean))
 
 
 def snake(string: str, clean: bool = True) -> str:
-    words = re.split(const.REGEXP_NON_ALPHANUMERIC, strip(string, clean))
-    return const.SYMBOL_LOWER_HYPHEN.join(lower(word) for word in words if word)
-
-
-def camel(string: str, clean: bool = True) -> str:
     string = strip(string, clean)
-    if words := re.split(const.REGEXP_NON_ALPHANUMERIC, strip(string, clean)):
-        return lower(words[0]) + const.SYMBOL_EMPTY.join(capitalize(word) for word in words[1:] if word)
-    else:
-        return string
 
-
-def pascal(string: str, preserve: bool = True, clean: bool = True) -> str:
-    if clean:
-        string = string.strip()
-
-    chunks = re.split(const.REGEXP_NON_ALPHANUMERIC, string)
-    result = []
+    chunks = const.REGEXP_NON_ALPHANUMERIC.split(string)
+    words = []
 
     for chunk in chunks:
         if not chunk:
             continue
 
-        words = re.findall(const.REGEXP_PASCAL_WORDS, chunk)
-        for word in words:
-            if preserve and word.isupper() and len(word) > 1:  # Сохраняем аббревиатуры вроде "API"
-                result.append(word)
-            else:
-                result.append(word.capitalize())  # Первая буква заглавная
+        chunk_words = const.REGEXP_PASCAL_WORDS.findall(chunk)
+        words.extend(chunk_words)
 
-    return const.SYMBOL_EMPTY.join(result)
+    return const.SYMBOL_LOWER_HYPHEN.join(word.lower() for word in words if word)
+
+
+def camel(string: str, clean: bool = True) -> str:
+    string = strip(string, clean)
+
+    chunks = const.REGEXP_NON_ALPHANUMERIC.split(string)
+    words = []
+
+    for chunk in chunks:
+        if not chunk:
+            continue
+
+        chunk_words = const.REGEXP_PASCAL_WORDS.findall(chunk)
+        words.extend(chunk_words)
+
+    return words[0].lower() + "".join(word.capitalize() for word in words[1:])
+
+
+def pascal(string: str, preserve: bool = True, clean: bool = True) -> str:
+    string = strip(string, clean)
+
+    chunks = const.REGEXP_NON_ALPHANUMERIC.split(string)
+    words = []
+
+    for chunk in chunks:
+        if not chunk:
+            continue
+
+        chunk_words = const.REGEXP_PASCAL_WORDS.findall(chunk)
+        for word in chunk_words:
+            if preserve and word.isupper() and len(word) > 1:
+                words.append(word)
+            else:
+                words.append(word.capitalize())
+
+    return const.SYMBOL_EMPTY.join(words)
 
 
 def kebab(string: str, clean: bool = True) -> str:
-    words = re.split(const.REGEXP_NON_ALPHANUMERIC, strip(string, clean))
-    return const.SYMBOL_HYPHEN.join(lower(word) for word in words if word)
+    string = strip(string, clean)
 
+    chunks = const.REGEXP_NON_ALPHANUMERIC.split(string)
+    words = []
 
-def words(string: str, clean: bool = True) -> typing.List[str]:
-    return [word for word in re.split(const.REGEXP_NON_ALPHANUMERIC, strip(string, clean)) if word]
+    for chunk in chunks:
+        if not chunk:
+            continue
+
+        chunk_words = const.REGEXP_PASCAL_WORDS.findall(chunk)
+        words.extend(chunk_words)
+
+    return const.SYMBOL_HYPHEN.join(word.lower() for word in words if word)
 
 
 def split(string: str, separator: str = const.SYMBOL_WHITESPACE, clean: bool = True) -> typing.List[str]:
